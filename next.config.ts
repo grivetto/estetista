@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  // Note: We use the repository name 'estetica' as the basePath
-  basePath: '/estetica',
+  // Note: We use the repository name 'estetista' as the basePath
+  basePath: '/estetista',
   images: {
     unoptimized: true,
   },
