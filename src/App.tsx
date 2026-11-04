@@ -42,38 +42,38 @@ import {
   Booking,
 } from './data/treatments';
 
-const STORAGE_KEY = 'aura_estetista_bookings_v1';
+const STORAGE_KEY = 'aura_estetista_bookings_es_v1';
 
 const SERVICES_DATA = [
   {
     id: 'viso' as const,
     defaultTreatmentId: 'pulizia-viso-profonda',
-    title: 'Trattamenti Viso',
-    description: 'Rituali rigeneranti e anti-age per una pelle luminosa e visibilmente più giovane.',
+    title: 'Tratamientos Faciales',
+    description: 'Rituales regeneradores y antiedad para una piel luminosa y visiblemente más joven.',
     icon: <Sparkles className="text-gold" size={32} />,
     image: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'corpo' as const,
     defaultTreatmentId: 'massaggio-relax',
-    title: 'Body Massage',
-    description: "Massaggi decontratturanti e rilassanti per sciogliere le tensioni e ritrovare l'armonia.",
+    title: 'Masajes y Corporal',
+    description: 'Masajes descontracturantes y relajantes para liberar tensiones y recuperar la armonía interior.',
     icon: <Flower2 className="text-gold" size={32} />,
     image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'laser' as const,
     defaultTreatmentId: 'laser-gambe-inguine',
-    title: 'Epilazione Laser',
-    description: 'Tecnologia laser a diodo per una pelle liscia in modo permanente, sicuro ed efficace.',
+    title: 'Depilación Láser',
+    description: 'Tecnología láser de diodo para una piel suave de forma permanente, segura e indolora.',
     icon: <Heart className="text-gold" size={32} />,
     image: 'https://images.unsplash.com/photo-1552693673-1bf958298935?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'mani-piedi' as const,
     defaultTreatmentId: 'manicure-spa-semipermanente',
-    title: 'Manicure & Pedicure',
-    description: 'Cura professionale per mani e piedi con smalti semipermanenti e trattamenti spa.',
+    title: 'Manicura y Pedicura',
+    description: 'Cuidado profesional para manos y pies con esmaltes semipermanentes y rituales spa.',
     icon: <Scissors className="text-gold" size={32} />,
     image: 'https://images.unsplash.com/photo-1610992015732-2449b0c26670?auto=format&fit=crop&q=80&w=800',
   },
@@ -104,9 +104,9 @@ function getUpcomingDays(count = 14) {
     const isSunday = d.getDay() === 0;
     days.push({
       dateStr,
-      dayName: d.toLocaleDateString('it-IT', { weekday: 'short' }),
+      dayName: d.toLocaleDateString('es-ES', { weekday: 'short' }),
       dayNum: d.getDate(),
-      monthName: d.toLocaleDateString('it-IT', { month: 'short' }),
+      monthName: d.toLocaleDateString('es-ES', { month: 'short' }),
       isSunday,
     });
   }
@@ -128,15 +128,15 @@ function downloadICS(booking: Booking) {
   const icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Aura Beauty & Wellness//Booking System//IT',
+    'PRODID:-//Aura Beauty & Wellness//Booking System//ES',
     'BEGIN:VEVENT',
-    `UID:${booking.id}@aurabeauty.it`,
+    `UID:${booking.id}@aurabeauty.es`,
     `DTSTAMP:${fmt(new Date())}`,
     `DTSTART:${fmt(start)}`,
     `DTEND:${fmt(end)}`,
     `SUMMARY:${title}`,
-    `DESCRIPTION:Codice Prenotazione: ${booking.code}\\nSpecialista: ${specialist?.name || 'Team Aura'}\\nTotale: €${booking.totalPrice}`,
-    'LOCATION:Aura Beauty & Wellness, Via della Bellezza 12, Roma',
+    `DESCRIPTION:Código de Reserva: ${booking.code}\\nEspecialista: ${specialist?.name || 'Equipo Aura'}\\nTotal: ${booking.totalPrice} €`,
+    'LOCATION:Aura Beauty & Wellness, Calle Serrano 42, Madrid',
     'END:VEVENT',
     'END:VCALENDAR',
   ].join('\r\n');
@@ -145,7 +145,7 @@ function downloadICS(booking: Booking) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `prenotazione-${booking.code.toLowerCase()}.ics`;
+  a.download = `reserva-${booking.code.toLowerCase()}.ics`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -193,7 +193,7 @@ export default function App() {
   };
 
   const activeBookings = useMemo(
-    () => bookings.filter((b) => b.status === 'confermata'),
+    () => bookings.filter((b) => b.status === 'confirmada'),
     [bookings]
   );
 
@@ -260,7 +260,7 @@ export default function App() {
   const handleConfirmBooking = (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim() || !clientPhone.trim() || !clientEmail.trim()) {
-      setFormError('Compila tutti i campi obbligatori (Nome, Telefono, Email).');
+      setFormError('Por favor, completa todos los campos obligatorios (Nombre, Teléfono, Email).');
       return;
     }
     setFormError('');
@@ -290,7 +290,7 @@ export default function App() {
       totalPrice,
       totalDuration,
       createdAt: new Date().toISOString(),
-      status: 'confermata',
+      status: 'confirmada',
     };
 
     saveBookings([newBooking, ...bookings]);
@@ -302,7 +302,7 @@ export default function App() {
 
   const cancelBooking = (id: string) => {
     saveBookings(
-      bookings.map((b) => (b.id === id ? { ...b, status: 'cancellata' as const } : b))
+      bookings.map((b) => (b.id === id ? { ...b, status: 'cancelada' as const } : b))
     );
   };
 
@@ -318,23 +318,23 @@ export default function App() {
       {/* HERO */}
       <Hero onBookNow={() => scrollToBooking()} />
 
-      {/* CHI SIAMO */}
+      {/* QUIÉNES SOMOS */}
       <About />
 
-      {/* SERVIZI */}
+      {/* SERVICIOS */}
       <Services
         onSelectCategory={(cat, defaultTreatmentId) =>
           scrollToBooking({ category: cat, treatmentId: defaultTreatmentId, targetStep: 1 })
         }
       />
 
-      {/* LISTINO INTERATTIVO */}
+      {/* TARIFAS INTERACTIVAS */}
       <PriceList
         onSelectTreatment={(id) => scrollToBooking({ treatmentId: id, targetStep: 2 })}
         onBookAll={() => scrollToBooking()}
       />
 
-      {/* SISTEMA DI PRENOTAZIONE TRATTAMENTI */}
+      {/* SISTEMA DE RESERVA DE TRATAMIENTOS */}
       <section id="prenota" className="py-24 bg-stone-50 border-t border-stone-200/60">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
@@ -342,19 +342,19 @@ export default function App() {
               Concierge Online Aura Beauty
             </span>
             <h2 className="text-4xl md:text-5xl mb-4">
-              Prenota il tuo <span className="italic font-normal">Trattamento</span>
+              Reserva tu <span className="italic font-normal">Tratamiento</span>
             </h2>
             <p className="text-stone-500 max-w-2xl mx-auto text-sm leading-relaxed">
-              Scegli uno o più rituali di bellezza, seleziona l&apos;estetista, la data e l&apos;orario che preferisci e ricevi subito il tuo pass di conferma.
+              Elige uno o varios rituales de belleza, selecciona tu especialista, la fecha y la hora que prefieras y recibe al instante tu pase de confirmación.
             </p>
 
             {/* Stepper */}
             {step < 4 && (
               <div className="max-w-xl mx-auto mt-10 flex items-center justify-between px-2">
                 {[
-                  { num: 1, label: '1. Trattamenti' },
-                  { num: 2, label: '2. Data e Orario' },
-                  { num: 3, label: '3. I Tuoi Dati' },
+                  { num: 1, label: '1. Tratamientos' },
+                  { num: 2, label: '2. Fecha y Hora' },
+                  { num: 3, label: '3. Tus Datos' },
                 ].map((s, idx) => {
                   const isActive = step === s.num;
                   const isDone = step > s.num;
@@ -411,7 +411,7 @@ export default function App() {
             {/* Left / Wizard Main Column */}
             <div className="lg:col-span-2">
               <AnimatePresence mode="wait">
-                {/* STEP 1: TRATTAMENTI */}
+                {/* STEP 1: TRATAMIENTOS */}
                 {step === 1 && (
                   <motion.div
                     key="step1"
@@ -463,7 +463,7 @@ export default function App() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent" />
                                 {t.popular && (
                                   <span className="absolute top-3 left-3 bg-gold text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full font-semibold">
-                                    Più Richiesto
+                                    Más Solicitado
                                   </span>
                                 )}
                                 <div
@@ -496,14 +496,14 @@ export default function App() {
                             <div className="px-5 pb-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
                               <span className="flex items-center gap-1.5">
                                 <Clock size={13} className="text-gold" />
-                                Durata: {t.duration} min
+                                Duración: {t.duration} min
                               </span>
                               <span
                                 className={`uppercase tracking-wider text-[10px] font-semibold ${
                                   isSelected ? 'text-gold' : 'text-stone-600'
                                 }`}
                               >
-                                {isSelected ? 'Selezionato ✓' : '+ Seleziona'}
+                                {isSelected ? 'Seleccionado ✓' : '+ Seleccionar'}
                               </span>
                             </div>
                           </div>
@@ -513,7 +513,7 @@ export default function App() {
                   </motion.div>
                 )}
 
-                {/* STEP 2: SPECIALISTA, DATA E ORARIO */}
+                {/* STEP 2: ESPECIALISTA, FECHA Y HORA */}
                 {step === 2 && (
                   <motion.div
                     key="step2"
@@ -527,9 +527,9 @@ export default function App() {
                       <div className="flex items-center gap-3 mb-6">
                         <User className="text-gold" size={22} />
                         <div>
-                          <h3 className="text-2xl text-stone-800">1. Scegli la tua Specialista</h3>
+                          <h3 className="text-2xl text-stone-800">1. Elige tu Especialista</h3>
                           <p className="text-xs text-stone-400">
-                            Seleziona la professionista che preferisci o lascia assegnazione prioritaria.
+                            Selecciona tu profesional de confianza o deja la asignación prioritaria automática.
                           </p>
                         </div>
                       </div>
@@ -575,9 +575,9 @@ export default function App() {
                         <div className="flex items-center gap-3">
                           <CalendarIcon className="text-gold" size={22} />
                           <div>
-                            <h3 className="text-2xl text-stone-800">2. Seleziona la Data</h3>
+                            <h3 className="text-2xl text-stone-800">2. Selecciona la Fecha</h3>
                             <p className="text-xs text-stone-400">
-                              Aperti dal Lunedì al Sabato dalle 09:00 alle 20:00 (Domenica chiuso).
+                              Abierto de lunes a sábado de 09:00 a 20:00 (domingos cerrado).
                             </p>
                           </div>
                         </div>
@@ -621,7 +621,7 @@ export default function App() {
                                 {d.dayNum}
                               </span>
                               <span className="text-[10px] uppercase tracking-widest block opacity-75">
-                                {d.isSunday ? 'Chiuso' : d.monthName}
+                                {d.isSunday ? 'Cerrado' : d.monthName}
                               </span>
                             </button>
                           );
@@ -634,9 +634,9 @@ export default function App() {
                       <div className="flex items-center gap-3 mb-6">
                         <Clock className="text-gold" size={22} />
                         <div>
-                          <h3 className="text-2xl text-stone-800">3. Scegli l&apos;Orario</h3>
+                          <h3 className="text-2xl text-stone-800">3. Elige la Hora</h3>
                           <p className="text-xs text-stone-400">
-                            Disponibilità aggiornata in tempo reale per la data selezionata.
+                            Disponibilidad actualizada en tiempo real para la fecha seleccionada.
                           </p>
                         </div>
                       </div>
@@ -645,10 +645,10 @@ export default function App() {
                         <div className="p-8 rounded-2xl bg-stone-50 text-center space-y-2">
                           <AlertCircle className="mx-auto text-gold" size={28} />
                           <p className="font-serif text-lg text-stone-800">
-                            Centro chiuso di Domenica
+                            Centro cerrado los domingos
                           </p>
                           <p className="text-xs text-stone-500">
-                            Seleziona un giorno dal Lunedì al Sabato per visualizzare gli orari disponibili.
+                            Selecciona un día de lunes a sábado para ver los horarios disponibles.
                           </p>
                         </div>
                       ) : (
@@ -677,7 +677,7 @@ export default function App() {
                                 {slot}
                                 {occupied && (
                                   <span className="block text-[9px] uppercase tracking-tighter no-underline">
-                                    Occupato
+                                    Ocupado
                                   </span>
                                 )}
                               </button>
@@ -689,7 +689,7 @@ export default function App() {
                   </motion.div>
                 )}
 
-                {/* STEP 3: DATI CLIENTE & COCCOLA DI BENVENUTO */}
+                {/* STEP 3: DATOS DEL CLIENTE Y PREFERENCIAS */}
                 {step === 3 && (
                   <motion.form
                     key="step3"
@@ -701,10 +701,10 @@ export default function App() {
                   >
                     <div>
                       <h3 className="text-2xl md:text-3xl text-stone-800 mb-2">
-                        I Tuoi Dati e Preferenze Benessere
+                        Tus Datos y Preferencias de Bienestar
                       </h3>
                       <p className="text-xs text-stone-500">
-                        Inserisci i tuoi recapiti per confermare l&apos;appuntamento e personalizza la tua esperienza in cabina.
+                        Introduce tus datos de contacto para confirmar la cita y personaliza tu experiencia en cabina.
                       </p>
                     </div>
 
@@ -718,42 +718,42 @@ export default function App() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                          Nome e Cognome *
+                          Nombre y Apellidos *
                         </label>
                         <input
                           required
                           type="text"
                           value={clientName}
                           onChange={(e) => setClientName(e.target.value)}
-                          placeholder="es. Giulia Verdi"
+                          placeholder="ej. Carmen García"
                           className="w-full bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm focus:border-gold outline-none"
                         />
                       </div>
 
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                          Telefono / WhatsApp *
+                          Teléfono / WhatsApp *
                         </label>
                         <input
                           required
                           type="tel"
                           value={clientPhone}
                           onChange={(e) => setClientPhone(e.target.value)}
-                          placeholder="+39 333 1234567"
+                          placeholder="+34 600 123 456"
                           className="w-full bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm focus:border-gold outline-none"
                         />
                       </div>
 
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                          Email *
+                          Correo Electrónico *
                         </label>
                         <input
                           required
                           type="email"
                           value={clientEmail}
                           onChange={(e) => setClientEmail(e.target.value)}
-                          placeholder="la-tua@email.it"
+                          placeholder="tu-correo@email.es"
                           className="w-full bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm focus:border-gold outline-none"
                         />
                       </div>
@@ -764,7 +764,7 @@ export default function App() {
                       <div className="flex items-center gap-2">
                         <Sparkles size={18} className="text-gold" />
                         <h4 className="text-lg text-stone-800">
-                          Personalizza il tuo Rituale (Incluso)
+                          Personaliza tu Ritual (Incluido)
                         </h4>
                       </div>
 
@@ -772,7 +772,7 @@ export default function App() {
                         <div>
                           <label className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-stone-400 mb-2">
                             <Coffee size={13} className="text-gold" />
-                            Tisana / Welcome Drink
+                            Infusión / Bebida de Bienvenida
                           </label>
                           <select
                             value={welcomeDrink}
@@ -790,7 +790,7 @@ export default function App() {
                         <div>
                           <label className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-stone-400 mb-2">
                             <Music size={13} className="text-gold" />
-                            Atmosfera in Cabina
+                            Ambiente en Cabina
                           </label>
                           <select
                             value={atmosphere}
@@ -808,13 +808,13 @@ export default function App() {
 
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                          Note, Allergie o Desideri Particolari (Opzionale)
+                          Notas, Alergias o Peticiones Especiales (Opcional)
                         </label>
                         <textarea
                           rows={3}
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
-                          placeholder="Segnalaci eventuali allergie, sensibilità cutanee o richieste specifiche..."
+                          placeholder="Indícanos cualquier alergia, sensibilidad cutánea o preferencia especial..."
                           className="w-full bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm focus:border-gold outline-none resize-none"
                         />
                       </div>
@@ -827,20 +827,20 @@ export default function App() {
                         className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-stone-500 hover:text-stone-800 cursor-pointer"
                       >
                         <ChevronLeft size={16} />
-                        Modifica Data / Orario
+                        Modificar Fecha / Hora
                       </button>
 
                       <button
                         type="submit"
                         className="w-full sm:w-auto px-10 py-4 bg-gold text-white text-xs uppercase tracking-widest font-semibold rounded-full hover:bg-stone-800 transition-all shadow-lg shadow-gold/20 cursor-pointer"
                       >
-                        Conferma Prenotazione • € {totalPrice}
+                        Confirmar Reserva • {totalPrice} €
                       </button>
                     </div>
                   </motion.form>
                 )}
 
-                {/* STEP 4: VOUCHER DI CONFERMA */}
+                {/* STEP 4: VOUCHER DE CONFIRMACIÓN */}
                 {step === 4 && confirmedBooking && (
                   <motion.div
                     key="step4"
@@ -854,13 +854,13 @@ export default function App() {
 
                     <div className="space-y-2">
                       <span className="text-xs uppercase tracking-[0.3em] text-gold block font-semibold">
-                        Prenotazione Confermata
+                        Reserva Confirmada
                       </span>
                       <h3 className="text-3xl md:text-5xl text-stone-800">
-                        Grazie, <span className="italic font-normal">{confirmedBooking.clientName}</span>
+                        Gracias, <span className="italic font-normal">{confirmedBooking.clientName}</span>
                       </h3>
                       <p className="text-sm text-stone-500 max-w-md mx-auto">
-                        Il tuo appuntamento da Aura Beauty & Wellness è stato registrato. Ti aspettiamo in Via della Bellezza 12, Roma.
+                        Tu cita en Aura Beauty & Wellness ha quedado registrada. Te esperamos en Calle Serrano 42, Madrid.
                       </p>
                     </div>
 
@@ -868,7 +868,7 @@ export default function App() {
                       <div className="flex items-center justify-between border-b border-stone-200 pb-4">
                         <div>
                           <span className="text-[10px] uppercase tracking-widest text-stone-400 block">
-                            Codice Prenotazione
+                            Código de Reserva
                           </span>
                           <span className="font-mono text-lg font-bold text-gold">
                             {confirmedBooking.code}
@@ -876,17 +876,17 @@ export default function App() {
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] uppercase tracking-widest text-stone-400 block">
-                            Totale Previsto
+                            Importe Total
                           </span>
                           <span className="text-2xl font-serif font-bold text-stone-800">
-                            € {confirmedBooking.totalPrice}
+                            {confirmedBooking.totalPrice} €
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-2.5 text-xs text-stone-700">
                         <div className="flex justify-between gap-4">
-                          <span className="text-stone-400">Trattamenti:</span>
+                          <span className="text-stone-400">Tratamientos:</span>
                           <span className="font-semibold text-right">
                             {TREATMENTS.filter((t) =>
                               confirmedBooking.treatmentIds.includes(t.id)
@@ -896,10 +896,10 @@ export default function App() {
                           </span>
                         </div>
                         <div className="flex justify-between gap-4">
-                          <span className="text-stone-400">Data e Ora:</span>
+                          <span className="text-stone-400">Fecha y Hora:</span>
                           <span className="font-semibold">
                             {new Date(confirmedBooking.date + 'T00:00:00').toLocaleDateString(
-                              'it-IT',
+                              'es-ES',
                               {
                                 weekday: 'long',
                                 day: 'numeric',
@@ -907,24 +907,24 @@ export default function App() {
                                 year: 'numeric',
                               }
                             )}{' '}
-                            alle {confirmedBooking.time}
+                            a las {confirmedBooking.time}
                           </span>
                         </div>
                         <div className="flex justify-between gap-4">
-                          <span className="text-stone-400">Durata Complessiva:</span>
+                          <span className="text-stone-400">Duración Total:</span>
                           <span className="font-semibold">
-                            {confirmedBooking.totalDuration} minuti
+                            {confirmedBooking.totalDuration} minutos
                           </span>
                         </div>
                         <div className="flex justify-between gap-4">
-                          <span className="text-stone-400">Specialista:</span>
+                          <span className="text-stone-400">Especialista:</span>
                           <span className="font-semibold">
                             {SPECIALISTS.find((s) => s.id === confirmedBooking.specialistId)
-                              ?.name || 'Team Aura'}
+                              ?.name || 'Equipo Aura'}
                           </span>
                         </div>
                         <div className="flex justify-between gap-4">
-                          <span className="text-stone-400">Welcome Drink:</span>
+                          <span className="text-stone-400">Bebida de Bienvenida:</span>
                           <span className="font-medium">{confirmedBooking.welcomeDrink}</span>
                         </div>
                       </div>
@@ -937,14 +937,14 @@ export default function App() {
                         className="inline-flex items-center gap-2 px-7 py-3.5 bg-gold text-white text-xs uppercase tracking-widest rounded-full hover:bg-stone-800 transition-all cursor-pointer shadow-md"
                       >
                         <Download size={15} />
-                        Salva in Calendario (.ics)
+                        Guardar en Calendario (.ics)
                       </button>
                       <button
                         type="button"
                         onClick={() => setIsDrawerOpen(true)}
                         className="px-7 py-3.5 bg-stone-800 text-white text-xs uppercase tracking-widest rounded-full hover:bg-stone-700 transition-all cursor-pointer"
                       >
-                        Le Mie Prenotazioni ({activeBookings.length})
+                        Mis Reservas ({activeBookings.length})
                       </button>
                       <button
                         type="button"
@@ -955,7 +955,7 @@ export default function App() {
                         }}
                         className="px-7 py-3.5 border border-stone-300 text-stone-700 text-xs uppercase tracking-widest rounded-full hover:border-gold hover:text-gold transition-all cursor-pointer"
                       >
-                        Nuova Prenotazione
+                        Nueva Reserva
                       </button>
                     </div>
                   </motion.div>
@@ -968,14 +968,14 @@ export default function App() {
               <div className="bg-white p-6 md:p-8 rounded-3xl border border-stone-200/80 shadow-lg space-y-6">
                 <div className="border-b border-stone-100 pb-4">
                   <span className="text-[10px] uppercase tracking-[0.3em] text-gold block font-semibold">
-                    Riepilogo Appuntamento
+                    Resumen de la Cita
                   </span>
-                  <h3 className="text-2xl text-stone-800">Il Tuo Rituale</h3>
+                  <h3 className="text-2xl text-stone-800">Tu Ritual</h3>
                 </div>
 
                 {chosenTreatmentObjects.length === 0 ? (
                   <p className="text-xs text-stone-400 italic py-4">
-                    Seleziona almeno un trattamento per continuare.
+                    Selecciona al menos un tratamiento para continuar.
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -1000,14 +1000,14 @@ export default function App() {
 
                 <div className="bg-stone-50 p-4 rounded-2xl space-y-2 text-xs">
                   <div className="flex justify-between text-stone-500">
-                    <span>Durata Complessiva:</span>
+                    <span>Duración Total:</span>
                     <span className="font-semibold text-stone-800">{totalDuration} min</span>
                   </div>
                   {selectedDate && (
                     <div className="flex justify-between text-stone-500">
-                      <span>Data:</span>
+                      <span>Fecha:</span>
                       <span className="font-semibold text-stone-800">
-                        {new Date(selectedDate + 'T00:00:00').toLocaleDateString('it-IT', {
+                        {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es-ES', {
                           day: '2-digit',
                           month: 'short',
                           year: 'numeric',
@@ -1017,22 +1017,22 @@ export default function App() {
                   )}
                   {selectedTime && (
                     <div className="flex justify-between text-stone-500">
-                      <span>Orario:</span>
+                      <span>Hora:</span>
                       <span className="font-semibold text-gold">{selectedTime}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-stone-500">
-                    <span>Specialista:</span>
+                    <span>Especialista:</span>
                     <span className="font-semibold text-stone-800">
                       {SPECIALISTS.find((s) => s.id === selectedSpecialist)?.name}
                     </span>
                   </div>
                   <div className="border-t border-stone-200 pt-3 mt-2 flex justify-between items-baseline">
                     <span className="uppercase tracking-widest text-[10px] font-bold text-stone-400">
-                      Totale
+                      Total
                     </span>
                     <span className="text-2xl font-serif font-bold text-gold">
-                      € {totalPrice}
+                      {totalPrice} €
                     </span>
                   </div>
                 </div>
@@ -1044,7 +1044,7 @@ export default function App() {
                     onClick={() => setStep(2)}
                     className="w-full py-4 bg-gold text-white text-xs uppercase tracking-widest font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md cursor-pointer"
                   >
-                    Scegli Data e Orario
+                    Elegir Fecha y Hora
                     <ChevronRight size={16} />
                   </button>
                 )}
@@ -1057,12 +1057,12 @@ export default function App() {
                       onClick={() => setStep(3)}
                       className="w-full py-4 bg-gold text-white text-xs uppercase tracking-widest font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md cursor-pointer"
                     >
-                      Procedi con i Tuoi Dati
+                      Continuar con tus Datos
                       <ChevronRight size={16} />
                     </button>
                     {!selectedTime && (
                       <p className="text-[11px] text-center text-stone-400">
-                        Seleziona un orario disponibile per continuare
+                        Selecciona un horario disponible para continuar
                       </p>
                     )}
                     <button
@@ -1071,7 +1071,7 @@ export default function App() {
                       className="w-full py-2 text-xs uppercase tracking-widest text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <ChevronLeft size={14} />
-                      Aggiungi o Modifica Trattamenti
+                      Añadir o Modificar Tratamientos
                     </button>
                   </div>
                 )}
@@ -1079,15 +1079,15 @@ export default function App() {
                 <div className="pt-4 border-t border-stone-100 space-y-2.5 text-[11px] text-stone-500">
                   <div className="flex items-center gap-2">
                     <ShieldCheck size={15} className="text-gold shrink-0" />
-                    <span>Conferma immediata • Pagamento in istituto</span>
+                    <span>Confirmación inmediata • Pago en el centro</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin size={15} className="text-gold shrink-0" />
-                    <span>Via della Bellezza, 12 — Roma</span>
+                    <span>Calle Serrano, 42 — Madrid</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone size={15} className="text-gold shrink-0" />
-                    <span>Assistenza: +39 06 123 4567</span>
+                    <span>Atención al cliente: +34 910 123 456</span>
                   </div>
                 </div>
               </div>
@@ -1096,16 +1096,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* RECENSIONI */}
+      {/* OPINIONES */}
       <Testimonials />
 
-      {/* CONTATTI */}
+      {/* CONTACTO */}
       <Contact />
 
       {/* FOOTER */}
       <Footer />
 
-      {/* DRAWER: LE MIE PRENOTAZIONI */}
+      {/* DRAWER: MIS RESERVAS */}
       <BookingsDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
@@ -1139,12 +1139,12 @@ const Navbar = ({
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#' },
-    { name: 'Chi Siamo', href: '#chi-siamo' },
-    { name: 'Servizi', href: '#servizi' },
-    { name: 'Listino', href: '#listino' },
-    { name: 'Prenota', href: '#prenota' },
-    { name: 'Contatti', href: '#contatti' },
+    { name: 'Inicio', href: '#' },
+    { name: 'Nosotros', href: '#chi-siamo' },
+    { name: 'Servicios', href: '#servizi' },
+    { name: 'Tarifas', href: '#listino' },
+    { name: 'Reservar', href: '#prenota' },
+    { name: 'Contacto', href: '#contatti' },
   ];
 
   return (
@@ -1183,7 +1183,7 @@ const Navbar = ({
             }`}
           >
             <CalendarCheck size={17} />
-            <span className="hidden lg:inline">Le Mie Prenotazioni</span>
+            <span className="hidden lg:inline">Mis Reservas</span>
             {activeCount > 0 && (
               <span className="w-5 h-5 rounded-full bg-gold text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
                 {activeCount}
@@ -1196,7 +1196,7 @@ const Navbar = ({
             onClick={onBookNow}
             className="bg-gold text-white px-6 py-2.5 rounded-full text-xs uppercase tracking-widest hover:bg-stone-800 transition-all duration-300 cursor-pointer shadow-sm"
           >
-            Prenota Ora
+            Reservar Ahora
           </button>
         </div>
 
@@ -1206,7 +1206,7 @@ const Navbar = ({
             type="button"
             onClick={onOpenDrawer}
             className={`relative p-2 ${scrolled ? 'text-stone-800' : 'text-white'}`}
-            aria-label="Le Mie Prenotazioni"
+            aria-label="Mis Reservas"
           >
             <CalendarCheck size={22} />
             {activeCount > 0 && (
@@ -1252,7 +1252,7 @@ const Navbar = ({
               }}
               className="text-xs uppercase tracking-widest text-gold font-semibold"
             >
-              Le Mie Prenotazioni ({activeCount})
+              Mis Reservas ({activeCount})
             </button>
             <button
               type="button"
@@ -1262,7 +1262,7 @@ const Navbar = ({
               }}
               className="bg-gold text-white px-8 py-3 rounded-full text-xs uppercase tracking-widest"
             >
-              Prenota Ora
+              Reservar Ahora
             </button>
           </motion.div>
         )}
@@ -1277,7 +1277,7 @@ const Hero = ({ onBookNow }: { onBookNow: () => void }) => {
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&q=80&w=2000"
-          alt="Luxury Spa Atmosphere"
+          alt="Atmósfera de Spa de Lujo"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
@@ -1291,7 +1291,7 @@ const Hero = ({ onBookNow }: { onBookNow: () => void }) => {
           transition={{ duration: 0.8 }}
           className="inline-block text-white uppercase tracking-[0.5em] text-sm mb-6"
         >
-          L&apos;essenza del benessere
+          La esencia del bienestar
         </motion.span>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -1299,7 +1299,7 @@ const Hero = ({ onBookNow }: { onBookNow: () => void }) => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-tight"
         >
-          Ritrova la tua <br /> <span className="italic">Luce Interiore</span>
+          Redescubre tu <br /> <span className="italic">Luz Interior</span>
         </motion.h1>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -1312,13 +1312,13 @@ const Hero = ({ onBookNow }: { onBookNow: () => void }) => {
             onClick={onBookNow}
             className="bg-white text-stone-800 px-10 py-4 rounded-full text-sm uppercase tracking-[0.2em] hover:bg-gold hover:text-white transition-all duration-500 shadow-2xl cursor-pointer"
           >
-            Prenota un Trattamento
+            Reservar un Tratamiento
           </button>
           <a
             href="#listino"
             className="bg-stone-900/40 backdrop-blur-md border border-white/40 text-white px-8 py-4 rounded-full text-sm uppercase tracking-[0.2em] hover:bg-white hover:text-stone-800 transition-all duration-500"
           >
-            Scopri il Listino
+            Ver Tarifas
           </a>
         </motion.div>
       </div>
@@ -1349,7 +1349,7 @@ const About = () => {
             <div className="aspect-[4/5] overflow-hidden rounded-2xl shadow-2xl">
               <img
                 src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1000"
-                alt="Professional Esthetician"
+                alt="Especialista en Estética"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
@@ -1364,29 +1364,29 @@ const About = () => {
             transition={{ duration: 0.8 }}
           >
             <span className="text-gold uppercase tracking-widest text-sm mb-4 block">
-              La nostra filosofia
+              Nuestra filosofía
             </span>
             <h2 className="text-4xl md:text-5xl mb-8 leading-snug">
-              Un santuario di pace <br /> dedicato alla tua{' '}
-              <span className="italic font-normal">bellezza</span>
+              Un santuario de paz <br /> dedicado a tu{' '}
+              <span className="italic font-normal">belleza</span>
             </h2>
             <p className="text-stone-600 leading-relaxed mb-6 text-lg">
-              In Aura Beauty & Wellness, crediamo che la vera bellezza nasca dall&apos;equilibrio tra corpo e mente. Il nostro centro non è solo un luogo di trattamenti estetici, ma un rifugio dove il tempo si ferma per lasciar spazio alla cura di sé.
+              En Aura Beauty & Wellness creemos que la verdadera belleza nace del equilibrio entre cuerpo y mente. Nuestro centro no es solo un espacio de tratamientos estéticos, sino un refugio donde el tiempo se detiene para dedicarte al cuidado personal.
             </p>
             <p className="text-stone-600 leading-relaxed mb-8">
-              Il nostro team di esperti altamente qualificati utilizza tecnologie all&apos;avanguardia e prodotti biologici di altissima qualità per garantirti risultati visibili in un&apos;atmosfera di totale relax. Ogni percorso è personalizzato per rispondere alle tue esigenze uniche.
+              Nuestro equipo de especialistas altamente cualificadas combina aparatología de última generación y cosmética botánica de alta gama para garantizarte resultados visibles en una atmósfera de absoluta serenidad.
             </p>
             <div className="flex space-x-8">
               <div>
                 <span className="block text-3xl font-serif text-gold">15+</span>
                 <span className="text-xs uppercase tracking-widest text-stone-400">
-                  Anni di Esperienza
+                  Años de Experiencia
                 </span>
               </div>
               <div>
                 <span className="block text-3xl font-serif text-gold">5k+</span>
                 <span className="text-xs uppercase tracking-widest text-stone-400">
-                  Clienti Felici
+                  Clientas Satisfechas
                 </span>
               </div>
             </div>
@@ -1407,9 +1407,9 @@ const Services = ({
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-gold uppercase tracking-widest text-sm mb-4 block">
-            I nostri servizi
+            Nuestros servicios
           </span>
-          <h2 className="text-4xl md:text-5xl mb-4">Esperienze di Benessere</h2>
+          <h2 className="text-4xl md:text-5xl mb-4">Experiencias de Bienestar</h2>
           <div className="w-24 h-[1px] bg-gold mx-auto"></div>
         </div>
 
@@ -1443,7 +1443,7 @@ const Services = ({
               </div>
               <div className="px-8 pb-8">
                 <span className="text-xs uppercase tracking-widest text-gold font-semibold flex items-center group-hover:translate-x-2 transition-transform">
-                  Prenota ora <ChevronRight size={14} className="ml-1" />
+                  Reservar ahora <ChevronRight size={14} className="ml-1" />
                 </span>
               </div>
             </motion.div>
@@ -1462,19 +1462,19 @@ const PriceList = ({
   onBookAll: () => void;
 }) => {
   const sections = [
-    { id: 'viso', name: 'Trattamenti Viso' },
-    { id: 'corpo', name: 'Body Massage & Corpo' },
-    { id: 'laser', name: 'Epilazione Laser Diodo' },
-    { id: 'mani-piedi', name: 'Manicure & Pedicure Spa' },
+    { id: 'viso', name: 'Tratamientos Faciales' },
+    { id: 'corpo', name: 'Masajes y Corporal' },
+    { id: 'laser', name: 'Depilación Láser Diodo' },
+    { id: 'mani-piedi', name: 'Manicura y Pedicura Spa' },
   ] as const;
 
   return (
     <section id="listino" className="py-24 bg-white">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl mb-4">Listino Trattamenti</h2>
+          <h2 className="text-4xl mb-4">Carta de Tratamientos y Tarifas</h2>
           <p className="text-stone-400 italic">
-            Prezzi trasparenti per la tua bellezza • Clicca su un trattamento per prenotarlo subito
+            Precios transparentes para tu cuidado • Haz clic en cualquier tratamiento para reservarlo al instante
           </p>
         </div>
 
@@ -1498,13 +1498,13 @@ const PriceList = ({
                           {item.name}
                         </span>
                         <span className="text-[11px] text-stone-400">
-                          Durata: {item.duration} min
+                          Duración: {item.duration} min
                         </span>
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
                         <span className="font-medium text-stone-900">{item.priceLabel}</span>
                         <span className="text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-gold/40 text-gold group-hover:bg-gold group-hover:text-white transition-all">
-                          Prenota
+                          Reservar
                         </span>
                       </div>
                     </div>
@@ -1521,7 +1521,7 @@ const PriceList = ({
             onClick={onBookAll}
             className="border border-gold text-gold px-10 py-3.5 rounded-full text-xs uppercase tracking-widest hover:bg-gold hover:text-white transition-all cursor-pointer"
           >
-            Componi il tuo Percorso Personalizzato
+            Configurar tu Ritual Personalizado
           </button>
         </div>
       </div>
@@ -1532,18 +1532,18 @@ const PriceList = ({
 const Testimonials = () => {
   const reviews = [
     {
-      name: 'Elena Rossi',
-      text: "Un'esperienza incredibile. Il massaggio è stato il migliore che abbia mai ricevuto. L'ambiente è raffinato e il personale gentilissimo.",
+      name: 'Elena Morales',
+      text: 'Una experiencia increíble. El masaje holístico ha sido el mejor que he recibido nunca. El ambiente es exquisito y el trato inmejorable.',
       rating: 5,
     },
     {
-      name: 'Marco Bianchi',
-      text: 'Centro all’avanguardia. Ho iniziato il percorso laser e i risultati sono già visibili dopo poche sedute. Consigliatissimo!',
+      name: 'Carlos Mendoza',
+      text: 'Centro a la última vanguardia. Empecé con las sesiones de depilación láser y los resultados son visibles desde el primer mes. ¡100% recomendable!',
       rating: 5,
     },
     {
-      name: 'Giulia Verdi',
-      text: 'La pulizia del viso è stata un vero rituale di bellezza. La mia pelle non è mai stata così luminosa. Tornerò sicuramente.',
+      name: 'Lucía Serrano',
+      text: 'La limpieza facial con vitamina C fue un auténtico ritual de belleza. Mi piel nunca ha estado tan luminosa e hidratada. Volveré sin duda.',
       rating: 5,
     },
   ];
@@ -1552,7 +1552,7 @@ const Testimonials = () => {
     <section className="py-24 bg-cipria/30">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl mb-4 italic">Dicono di noi</h2>
+          <h2 className="text-4xl mb-4 italic">Lo que dicen de nosotros</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -1600,9 +1600,9 @@ const Contact = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-24">
           <div>
-            <h2 className="text-4xl mb-8">Contattaci</h2>
+            <h2 className="text-4xl mb-8">Contacto</h2>
             <p className="text-stone-500 mb-12">
-              Siamo a tua disposizione per qualsiasi informazione, consulenza personalizzata o richiesta speciale.
+              Estamos a tu disposición para cualquier consulta, diagnóstico facial gratuito o solicitud especial.
             </p>
 
             <div className="space-y-8">
@@ -1611,8 +1611,8 @@ const Contact = () => {
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Indirizzo</h4>
-                  <p className="text-stone-500">Via della Bellezza, 12 - 00100 Roma (RM)</p>
+                  <h4 className="font-semibold mb-1">Dirección</h4>
+                  <p className="text-stone-500">Calle Serrano, 42 - 28001 Madrid, España</p>
                 </div>
               </div>
 
@@ -1621,8 +1621,8 @@ const Contact = () => {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Telefono</h4>
-                  <p className="text-stone-500">+39 06 123 4567</p>
+                  <h4 className="font-semibold mb-1">Teléfono</h4>
+                  <p className="text-stone-500">+34 910 123 456</p>
                 </div>
               </div>
 
@@ -1631,9 +1631,9 @@ const Contact = () => {
                   <Clock size={24} />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Orari di Apertura</h4>
-                  <p className="text-stone-500">Lun - Sab: 09:00 - 20:00</p>
-                  <p className="text-stone-500">Domenica: Chiuso</p>
+                  <h4 className="font-semibold mb-1">Horario de Apertura</h4>
+                  <p className="text-stone-500">Lun - Sáb: 09:00 - 20:00</p>
+                  <p className="text-stone-500">Domingo: Cerrado</p>
                 </div>
               </div>
             </div>
@@ -1667,9 +1667,9 @@ const Contact = () => {
                   <div className="w-20 h-20 bg-gold/20 rounded-full flex items-center justify-center text-gold mb-6">
                     <Sparkles size={40} />
                   </div>
-                  <h3 className="text-2xl mb-4">Messaggio Ricevuto!</h3>
+                  <h3 className="text-2xl mb-4">¡Mensaje Recibido!</h3>
                   <p className="text-stone-500">
-                    Ti risponderemo al più presto. Grazie per aver scelto Aura Beauty & Wellness.
+                    Te responderemos a la mayor brevedad. Gracias por confiar en Aura Beauty & Wellness.
                   </p>
                 </motion.div>
               ) : (
@@ -1681,53 +1681,53 @@ const Contact = () => {
                   onSubmit={handleSubmit}
                   className="space-y-6"
                 >
-                  <h3 className="text-2xl text-stone-800 mb-2">Scrivici un Messaggio</h3>
+                  <h3 className="text-2xl text-stone-800 mb-2">Escríbenos un Mensaje</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                        Nome Completo
+                        Nombre Completo
                       </label>
                       <input
                         required
                         type="text"
                         className="w-full bg-white border-none rounded-xl p-4 focus:ring-2 focus:ring-gold outline-none"
-                        placeholder="Il tuo nome"
+                        placeholder="Tu nombre"
                       />
                     </div>
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                        Telefono
+                        Teléfono
                       </label>
                       <input
                         required
                         type="tel"
                         className="w-full bg-white border-none rounded-xl p-4 focus:ring-2 focus:ring-gold outline-none"
-                        placeholder="+39 000 0000000"
+                        placeholder="+34 600 000 000"
                       />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                      Email
+                      Correo Electrónico
                     </label>
                     <input
                       required
                       type="email"
                       className="w-full bg-white border-none rounded-xl p-4 focus:ring-2 focus:ring-gold outline-none"
-                      placeholder="La tua email"
+                      placeholder="Tu email"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-stone-400 mb-2">
-                      Messaggio o Richiesta Informazioni
+                      Mensaje o Consulta
                     </label>
                     <textarea
                       required
                       rows={4}
                       className="w-full bg-white border-none rounded-xl p-4 focus:ring-2 focus:ring-gold outline-none resize-none"
-                      placeholder="Come possiamo aiutarti?"
+                      placeholder="¿En qué podemos ayudarte?"
                     />
                   </div>
 
@@ -1735,7 +1735,7 @@ const Contact = () => {
                     type="submit"
                     className="w-full bg-gold text-white py-4 rounded-xl uppercase tracking-widest text-sm font-semibold hover:bg-stone-800 transition-all shadow-lg shadow-gold/20 cursor-pointer"
                   >
-                    Invia Messaggio
+                    Enviar Mensaje
                   </button>
                 </motion.form>
               )}
@@ -1760,8 +1760,8 @@ const BookingsDrawer = ({
   onCancel: (id: string) => void;
   onNewBooking: () => void;
 }) => {
-  const active = bookings.filter((b) => b.status === 'confermata');
-  const cancelled = bookings.filter((b) => b.status === 'cancellata');
+  const active = bookings.filter((b) => b.status === 'confirmada');
+  const cancelled = bookings.filter((b) => b.status === 'cancelada');
 
   return (
     <AnimatePresence>
@@ -1784,9 +1784,9 @@ const BookingsDrawer = ({
             <div className="p-6 border-b border-stone-200 flex items-center justify-between bg-white">
               <div>
                 <span className="text-[10px] uppercase tracking-[0.3em] text-gold block font-semibold">
-                  Area Personale
+                  Área Personal
                 </span>
-                <h2 className="text-2xl font-serif text-stone-800">Le Mie Prenotazioni</h2>
+                <h2 className="text-2xl font-serif text-stone-800">Mis Reservas</h2>
               </div>
               <button
                 type="button"
@@ -1803,22 +1803,22 @@ const BookingsDrawer = ({
                   <div className="w-16 h-16 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-6">
                     <Sparkles size={28} />
                   </div>
-                  <h3 className="text-xl font-serif mb-2">Nessun appuntamento attivo</h3>
+                  <h3 className="text-xl font-serif mb-2">No tienes citas activas</h3>
                   <p className="text-xs text-stone-500 leading-relaxed mb-8">
-                    Non hai ancora prenotazioni attive. Scegli il tuo trattamento dal listino e riserva il tuo momento di benessere.
+                    Aún no tienes reservas activas. Elige tu tratamiento de nuestra carta y reserva tu momento de bienestar.
                   </p>
                   <button
                     type="button"
                     onClick={onNewBooking}
                     className="px-8 py-3.5 bg-gold text-white text-xs uppercase tracking-widest rounded-full hover:bg-stone-800 transition-all cursor-pointer"
                   >
-                    Prenota un Trattamento
+                    Reservar un Tratamiento
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-stone-400 font-bold block">
-                    Appuntamenti Confermati ({active.length})
+                    Citas Confirmadas ({active.length})
                   </span>
 
                   {active.map((booking) => {
@@ -1840,7 +1840,7 @@ const BookingsDrawer = ({
                             </span>
                           </div>
                           <span className="text-base font-serif font-bold text-stone-800">
-                            € {booking.totalPrice}
+                            {booking.totalPrice} €
                           </span>
                         </div>
 
@@ -1857,7 +1857,7 @@ const BookingsDrawer = ({
                           <div className="flex items-center gap-2">
                             <CalendarIcon size={14} className="text-gold" />
                             <span>
-                              {new Date(booking.date + 'T00:00:00').toLocaleDateString('it-IT', {
+                              {new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', {
                                 day: '2-digit',
                                 month: 'short',
                                 year: 'numeric',
@@ -1872,7 +1872,7 @@ const BookingsDrawer = ({
                           </div>
                           <div className="flex items-center gap-2 col-span-2">
                             <User size={14} className="text-gold" />
-                            <span>{specialist?.name || 'Team Aura'}</span>
+                            <span>{specialist?.name || 'Equipo Aura'}</span>
                           </div>
                         </div>
 
@@ -1883,7 +1883,7 @@ const BookingsDrawer = ({
                             className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-gold hover:text-stone-800 font-semibold transition-colors cursor-pointer"
                           >
                             <Download size={13} />
-                            Salva in Calendario
+                            Guardar en Calendario
                           </button>
                           <button
                             type="button"
@@ -1891,7 +1891,7 @@ const BookingsDrawer = ({
                             className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-red-500/80 hover:text-red-600 font-medium transition-colors cursor-pointer"
                           >
                             <Trash2 size={13} />
-                            Annulla
+                            Cancelar
                           </button>
                         </div>
                       </div>
@@ -1903,7 +1903,7 @@ const BookingsDrawer = ({
               {cancelled.length > 0 && (
                 <div className="pt-4 border-t border-stone-200 space-y-3">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-stone-400 block">
-                    Storico Cancellate ({cancelled.length})
+                    Historial de Canceladas ({cancelled.length})
                   </span>
                   {cancelled.map((booking) => {
                     const treatments = TREATMENTS.filter((t) =>
@@ -1923,7 +1923,7 @@ const BookingsDrawer = ({
                           </p>
                         </div>
                         <span className="text-[10px] uppercase tracking-widest text-red-500">
-                          Annullata
+                          Cancelada
                         </span>
                       </div>
                     );
@@ -1938,7 +1938,7 @@ const BookingsDrawer = ({
                 onClick={onNewBooking}
                 className="w-full py-4 bg-gold text-white text-xs uppercase tracking-widest font-semibold rounded-xl hover:bg-stone-800 transition-all cursor-pointer"
               >
-                Nuova Prenotazione
+                Nueva Reserva
               </button>
             </div>
           </motion.aside>
@@ -1956,7 +1956,7 @@ const Footer = () => {
           <div className="text-center md:text-left mb-8 md:mb-0">
             <span className="text-2xl font-serif tracking-widest text-gold">AURA</span>
             <p className="text-stone-500 text-xs tracking-widest mt-2 uppercase">
-              L&apos;eccellenza del benessere a Roma
+              La excelencia del bienestar en Madrid
             </p>
           </div>
           <div className="flex space-x-8">
@@ -1964,25 +1964,25 @@ const Footer = () => {
               href="#"
               className="text-stone-400 hover:text-white transition-colors text-sm uppercase tracking-widest"
             >
-              Privacy Policy
+              Política de Privacidad
             </a>
             <a
               href="#"
               className="text-stone-400 hover:text-white transition-colors text-sm uppercase tracking-widest"
             >
-              Cookie Policy
+              Política de Cookies
             </a>
             <a
               href="#"
               className="text-stone-400 hover:text-white transition-colors text-sm uppercase tracking-widest"
             >
-              Termini e Condizioni
+              Términos y Condiciones
             </a>
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 text-center">
           <p className="text-stone-600 text-xs uppercase tracking-widest">
-            © {new Date().getFullYear()} Aura Beauty & Wellness. Tutti i diritti riservati.
+            © {new Date().getFullYear()} Aura Beauty & Wellness. Todos los derechos reservados.
           </p>
         </div>
       </div>
